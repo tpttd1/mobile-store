@@ -46,21 +46,24 @@ class ProductProvider extends Component {
             .then(res => res.json()).then(res => {
                 let tokens = res.token;
                 console.log("token: ", tokens);
+                this.setProducts(tokens);
                 this.setState({
                     token: tokens
                 }, function () {
                     console.log("when set token: " + this.state.token);
                 });
-                this.setProducts();
+                
             });
+            
     }
 
-    setProducts = () => {
-        let bearer = this.state.token;
+    setProducts = (token) => {
+        let bearer = token;
         console.log("when set product: " + bearer)
 
         fetch("http://localhost:8080/api/getAll", {
-            credentials: 'include',
+            // credentials: 'include',
+            // withCredentials: true, 
             headers: {
                 'Authorization': `Bearer ${bearer}`
             }
@@ -68,8 +71,9 @@ class ProductProvider extends Component {
             .then(res => res.json())
             .then(
                 (result) => {
+                    console.log(result);
                     this.setState(() => {
-                        return { products: result };
+                        return { products: result.data };
                     });
                 },
                 (error) => {
